@@ -1201,16 +1201,22 @@ const SLOT_SYMBOLS = ['cherry','lemon','bell','star','diamond','seven'];
 const SLOT_LABELS = {cherry:'Cherry', lemon:'Lemon', bell:'Bell', star:'Star', diamond:'Diamond', seven:'Seven'};
 const SLOT_PAYOUTS = {cherry:2, lemon:3, bell:5, star:10, diamond:25, seven:50};
 document.querySelectorAll('[data-slotpct]').forEach(b=>b.addEventListener('click', ()=>{
+  if(slotSpinning) return;
   document.getElementById('slotStake').value = Math.max(1,Math.floor(state.cash * parseFloat(b.dataset.slotpct)));
   playClick();
 }));
 let slotSpinning = false;
+function setSlotControlsLocked(locked){
+  document.getElementById('slotStake').disabled = locked;
+  document.querySelectorAll('[data-slotpct]').forEach(b=> b.disabled = locked);
+}
 document.getElementById('slotSpinBtn').addEventListener('click', ()=>{
   if(slotSpinning) return;
   const stake = Math.floor(parseFloat(document.getElementById('slotStake').value)||0);
   if(stake<=0){ toast('Enter a stake first.','bad'); return; }
   if(stake>state.cash){ toast("You don't have that much cash.",'bad'); return; }
   slotSpinning = true;
+  setSlotControlsLocked(true);
   state.cash -= stake;
   renderHud();
   playSpinSound();
@@ -1254,6 +1260,7 @@ document.getElementById('slotSpinBtn').addEventListener('click', ()=>{
       adjustRisk(stake/Math.max(1,state.cash+stake) * 15);
       slotSpinning = false;
       document.getElementById('slotSpinBtn').disabled = false;
+      setSlotControlsLocked(false);
       renderAll();
     }
   }, 80);
@@ -1268,24 +1275,36 @@ const DICE_MODES = [
   {id:'exact', label:'Exact Number (50)', payout:95, check:n=>n===50},
 ];
 let selectedDice = 'over50';
+let diceRolling = false;
 function renderDiceModes(){
   document.getElementById('diceModes').innerHTML = DICE_MODES.map(m=>
-    `<button class="bet-type${m.id===selectedDice?' selected':''}" data-dicemode="${m.id}">${m.label}<span class="odds">pays ${m.payout}x</span></button>`
+    `<button class="bet-type${m.id===selectedDice?' selected':''}" data-dicemode="${m.id}" ${diceRolling?'disabled':''}>${m.label}<span class="odds">pays ${m.payout}x</span></button>`
   ).join('');
 }
 renderDiceModes();
 document.getElementById('diceModes').addEventListener('click', e=>{
+  if(diceRolling) return;
   const b = e.target.closest('.bet-type'); if(!b) return;
   selectedDice = b.dataset.dicemode; renderDiceModes(); playClick();
 });
 document.querySelectorAll('[data-dicepct]').forEach(b=>b.addEventListener('click', ()=>{
+  if(diceRolling) return;
   document.getElementById('diceStake').value = Math.max(1,Math.floor(state.cash * parseFloat(b.dataset.dicepct)));
   playClick();
 }));
+function setDiceControlsLocked(locked){
+  document.getElementById('diceStake').disabled = locked;
+  document.querySelectorAll('[data-dicepct]').forEach(b=> b.disabled = locked);
+  renderDiceModes();
+}
 document.getElementById('diceRollBtn').addEventListener('click', ()=>{
+  if(diceRolling) return;
   const stake = Math.floor(parseFloat(document.getElementById('diceStake').value)||0);
   if(stake<=0){ toast('Enter a stake first.','bad'); return; }
   if(stake>state.cash){ toast("You don't have that much cash.",'bad'); return; }
+  diceRolling = true;
+  setDiceControlsLocked(true);
+  document.getElementById('diceRollBtn').disabled = true;
   state.cash -= stake;
   renderHud();
   playSpinSound();
@@ -1318,6 +1337,9 @@ document.getElementById('diceRollBtn').addEventListener('click', ()=>{
         playLoseSound();
       }
       adjustRisk(stake/Math.max(1,state.cash+stake) * 14);
+      diceRolling = false;
+      document.getElementById('diceRollBtn').disabled = false;
+      setDiceControlsLocked(false);
       renderAll();
     }
   }, 60);
@@ -1325,7 +1347,17 @@ document.getElementById('diceRollBtn').addEventListener('click', ()=>{
 
 /* ============================= CRAPS ============================= */
 let crapsPoint = null;
+let crapsInProgress = false;
 function rollDie(){ return Math.floor(Math.random()*6)+1; }
+function setCrapsControlsLocked(locked){
+  document.getElementById('crapsStake').disabled = locked;
+  document.querySelectorAll('[data-crapspct]').forEach(b=> b.disabled = locked);
+}
+document.querySelectorAll('[data-crapspct]').forEach(b=>b.addEventListener('click', ()=>{
+  if(crapsInProgress) return;
+  document.getElementById('crapsStake').value = Math.max(1,Math.floor(state.cash * parseFloat(b.dataset.crapspct)));
+  playClick();
+}));
 document.getElementById('crapsRollBtn').addEventListener('click', ()=>{
   const stake = Math.floor(parseFloat(document.getElementById('crapsStake').value)||0);
   if(!crapsPoint){
@@ -1333,6 +1365,8 @@ document.getElementById('crapsRollBtn').addEventListener('click', ()=>{
     if(stake>state.cash){ toast("You don't have that much cash.",'bad'); return; }
     state.cash -= stake;
     state.crapsStake = stake;
+    crapsInProgress = true;
+    setCrapsControlsLocked(true);
     renderHud();
   }
   playSpinSound();
@@ -1380,6 +1414,8 @@ function resolveCraps(win, msg){
   adjustRisk(stake/Math.max(1,state.cash+stake) * 16);
   crapsPoint = null;
   state.crapsStake = 0;
+  crapsInProgress = false;
+  setCrapsControlsLocked(false);
   document.getElementById('crapsPointLine').textContent = '';
   document.getElementById('crapsRollBtn').textContent = 'Roll';
   renderAll();
@@ -1408,6 +1444,15 @@ document.getElementById('horseList').addEventListener('click', e=>{
   const c = e.target.closest('[data-horse]'); if(!c) return;
   selectedHorse = c.dataset.horse; renderHorses(); playClick();
 });
+document.querySelectorAll('[data-horsepct]').forEach(b=>b.addEventListener('click', ()=>{
+  if(racing) return;
+  document.getElementById('horseStake').value = Math.max(1,Math.floor(state.cash * parseFloat(b.dataset.horsepct)));
+  playClick();
+}));
+function setHorseControlsLocked(locked){
+  document.getElementById('horseStake').disabled = locked;
+  document.querySelectorAll('[data-horsepct]').forEach(b=> b.disabled = locked);
+}
 function buildTrack(){
   const track = document.getElementById('raceTrack');
   track.innerHTML = `<span class="race-flag">${ICONS.flag}</span>` + HORSES.map((h,i)=>`
@@ -1426,6 +1471,7 @@ document.getElementById('horseRaceBtn').addEventListener('click', ()=>{
   if(stake<=0){ toast('Enter a stake first.','bad'); return; }
   if(stake>state.cash){ toast("You don't have that much cash.",'bad'); return; }
   racing = true;
+  setHorseControlsLocked(true);
   state.cash -= stake;
   renderHud();
   document.getElementById('horseRaceBtn').disabled = true;
@@ -1494,6 +1540,7 @@ document.getElementById('horseRaceBtn').addEventListener('click', ()=>{
       </div>`).join('');
     adjustRisk(stake/Math.max(1,state.cash+stake) * 15);
     racing = false;
+    setHorseControlsLocked(false);
     document.getElementById('horseRaceBtn').disabled = false;
     renderAll();
   }, maxDuration*1000 + 300);
@@ -1534,7 +1581,13 @@ function renderBJ(){
   document.getElementById('playerTotal').textContent = bj ? handTotal(bj.player) : '';
   document.getElementById('bjActionRow').style.display = bj && bj.inProgress ? 'flex' : 'none';
   document.getElementById('bjBetRow').style.display = bj && bj.inProgress ? 'none' : 'flex';
+  document.getElementById('bjQuickbets').style.display = bj && bj.inProgress ? 'none' : 'flex';
 }
+document.querySelectorAll('[data-bjpct]').forEach(b=>b.addEventListener('click', ()=>{
+  if(bj && bj.inProgress) return;
+  document.getElementById('bjStake').value = Math.max(1,Math.floor(state.cash * parseFloat(b.dataset.bjpct)));
+  playClick();
+}));
 document.getElementById('bjDealBtn').addEventListener('click', ()=>{
   const stake = Math.floor(parseFloat(document.getElementById('bjStake').value)||0);
   if(stake<=0){ toast('Enter a bet.','bad'); return; }
