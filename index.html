@@ -248,6 +248,68 @@
   .money-pop.bad{color:var(--red-bright);}
   @keyframes popup{0%{opacity:0; transform:translateY(0) scale(0.8);} 15%{opacity:1; transform:translateY(-10px) scale(1.05);} 80%{opacity:1;} 100%{opacity:0; transform:translateY(-50px) scale(1);}}
 
+  /* ---------- Big Win Celebration ---------- */
+  #celebrationOverlay{position:fixed; inset:0; z-index:1150; pointer-events:none; overflow:hidden;}
+  .gold-burst{
+    position:absolute; left:50%; top:45%; width:60px; height:60px; border-radius:50%;
+    transform:translate(-50%,-50%); background:radial-gradient(circle, rgba(240,211,138,0.9), rgba(216,180,94,0.5) 40%, transparent 70%);
+    animation:burstGrow 1.1s ease-out forwards;
+  }
+  .gold-burst.tier-huge{background:radial-gradient(circle, rgba(240,211,138,0.95), rgba(216,180,94,0.6) 45%, transparent 72%);}
+  .gold-burst.tier-mega{background:radial-gradient(circle, rgba(255,235,180,1), rgba(240,211,138,0.7) 45%, rgba(216,180,94,0.3) 65%, transparent 75%);}
+  @keyframes burstGrow{
+    0%{width:20px; height:20px; opacity:0;}
+    12%{opacity:1;}
+    100%{width:900px; height:900px; opacity:0;}
+  }
+  .win-banner{
+    position:absolute; left:50%; top:42%; transform:translate(-50%,-50%) scale(0.4); text-align:center;
+    animation:bannerPop 1.6s cubic-bezier(.2,1.4,.4,1) forwards;
+  }
+  .win-banner.tier-huge{animation-duration:1.9s;}
+  .win-banner.tier-mega{animation-duration:2.4s;}
+  .win-banner-title{
+    font-family:var(--display); font-weight:900; letter-spacing:1px; font-size:30px;
+    background:linear-gradient(100deg, var(--gold-bright), #fff 45%, var(--gold) 80%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    text-shadow:0 0 30px rgba(240,211,138,0.5); filter:drop-shadow(0 4px 10px rgba(0,0,0,0.5));
+  }
+  .win-banner.tier-huge .win-banner-title{font-size:38px;}
+  .win-banner.tier-mega .win-banner-title{font-size:48px;}
+  .win-banner-amount{
+    font-family:var(--mono); font-weight:700; font-size:22px; color:var(--emerald-bright); margin-top:4px;
+    text-shadow:0 2px 8px rgba(0,0,0,0.6);
+  }
+  .win-banner.tier-huge .win-banner-amount{font-size:27px;}
+  .win-banner.tier-mega .win-banner-amount{font-size:34px;}
+  @keyframes bannerPop{
+    0%{opacity:0; transform:translate(-50%,-50%) scale(0.3) rotate(-4deg);}
+    12%{opacity:1; transform:translate(-50%,-50%) scale(1.12) rotate(1deg);}
+    22%{transform:translate(-50%,-50%) scale(1) rotate(0deg);}
+    78%{opacity:1; transform:translate(-50%,-50%) scale(1) rotate(0deg);}
+    100%{opacity:0; transform:translate(-50%,-50%) scale(0.92) rotate(0deg);}
+  }
+  .money-particle{
+    position:absolute; width:22px; height:22px; margin:-11px 0 0 -11px;
+    animation:moneyFly 1.4s cubic-bezier(.15,.7,.3,1) forwards;
+  }
+  @keyframes moneyFly{
+    0%{opacity:0; transform:translate(0,0) rotate(0deg) scale(0.5);}
+    10%{opacity:1; transform:translate(calc(var(--dx) * 0.2), calc(var(--dy) * 0.2)) rotate(60deg) scale(1);}
+    100%{opacity:0; transform:translate(var(--dx), calc(var(--dy) + 140px)) rotate(360deg) scale(0.8);}
+  }
+  #app.screen-shake{animation:screenShake 0.5s cubic-bezier(.36,.07,.19,.97) both;}
+  @keyframes screenShake{
+    10%{transform:translate(-2px,-1px);} 20%{transform:translate(3px,1px);} 30%{transform:translate(-4px,1px);}
+    40%{transform:translate(3px,-2px);} 50%{transform:translate(-2px,2px);} 60%{transform:translate(2px,1px);}
+    70%{transform:translate(-3px,-1px);} 80%{transform:translate(2px,-1px);} 90%{transform:translate(-1px,1px);}
+    0%,100%{transform:translate(0,0);}
+  }
+  @media (prefers-reduced-motion: reduce){
+    #app.screen-shake{animation:none;}
+    .money-particle, .gold-burst, .win-banner{animation-duration:.01s !important;}
+  }
+
   .empty{color:var(--ink-faint); font-size:13px; font-style:italic;}
 
   /* ---------- Horse Racing Track ---------- */
@@ -313,7 +375,8 @@
   .scratch-cell.hidden-cell{background:repeating-linear-gradient(135deg, #2a2f38 0 6px, #1c2027 6px 12px);}
 
   /* ---------- Plinko ---------- */
-  .plinko-peg{position:absolute; width:6px; height:6px; border-radius:50%; background:var(--gold);}
+  .plinko-peg{position:absolute; width:6px; height:6px; border-radius:50%; background:var(--gold); transform:translate(-50%,-50%); transition:background .15s, box-shadow .15s, transform .15s;}
+  .plinko-peg.hit{background:var(--gold-bright); box-shadow:0 0 8px var(--gold-bright); transform:translate(-50%,-50%) scale(1.6);}
   .plinko-ball{position:absolute; width:14px; height:14px; border-radius:50%; background:radial-gradient(circle at 35% 30%, #fff, var(--gold-bright) 60%, var(--gold)); box-shadow:0 2px 6px rgba(0,0,0,0.5); transition: left .18s ease, top .18s ease; z-index:2;}
   .plinko-slot{flex:1; text-align:center; font-family:var(--mono); font-size:10.5px; padding:6px 2px; border-radius:6px; background:var(--panel-2); border:1px solid var(--line); color:var(--ink-dim);}
   .plinko-slot.hit{border-color:var(--gold-bright); color:var(--gold-bright); background:#1c1a10;}
@@ -397,6 +460,7 @@
 </div>
 
 <div id="toasts"></div>
+<div id="celebrationOverlay"></div>
 <div id="modalOverlay"><div id="modalBox"></div></div>
 
 <div id="app" style="display:none;">
@@ -714,7 +778,7 @@
   <div class="view" id="view-scratch">
     <div class="panel">
       <h2>Scratch Cards</h2>
-      <div class="sub">Buy a card, scratch it off, match three symbols in a row to win.</div>
+      <div class="sub">Buy a card, then scratch each of the three squares yourself. Match all three symbols to win.</div>
       <div class="table-felt" style="text-align:center;">
         <div id="scratchGrid" style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px; max-width:220px; margin:0 auto;"></div>
       </div>
@@ -942,6 +1006,7 @@ const ICONS = {
   flag: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" style="vertical-align:-2px;"><path d="M5 3v18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M5 4h6l-1.5 2.5L11 9H5z" fill="currentColor"/><path d="M13 4h6l-1.5 2.5L19 9h-6z" fill="currentColor" opacity="0.4"/></svg>`,
   gem: `<svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 2l6 6-6 14-6-14z" fill="#45c99a"/><path d="M6 8h12M12 2l-3.5 6 3.5 14 3.5-14z" stroke="#0e1a16" stroke-width="0.6" fill="none"/></svg>`,
   mine: `<svg width="20" height="20" viewBox="0 0 24 24"><circle cx="12" cy="14" r="7" fill="#1a1e24" stroke="#c0463a" stroke-width="1.4"/><path d="M12 3v3M5 6l2 2M19 6l-2 2" stroke="#c0463a" stroke-width="1.6" stroke-linecap="round"/><circle cx="9.5" cy="11.5" r="1.4" fill="#e2695c"/></svg>`,
+  coin: `<svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#f0d38a" stroke="#a9843c" stroke-width="1.4"/><circle cx="12" cy="12" r="6.5" fill="none" stroke="#a9843c" stroke-width="1"/><path d="M12 8v8M10 9.6c0-1 1-1.6 2-1.6s2 .6 2 1.4c0 2-4 1.4-4 3.2 0 .8.9 1.4 2 1.4s2-.6 2-1.6" stroke="#a9843c" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>`,
 };
 function horseIcon(color, size){
   size = size || 40;
@@ -996,6 +1061,13 @@ function playSpinSound(){
 function playWinSound(){
   if(!soundOn) return;
   [440,554.37,659.25,880].forEach((f,i)=> tone(f, i*0.08, 0.3, 'triangle', 0.11));
+}
+function playJackpotSound(){
+  if(!soundOn) return;
+  // A bigger, layered fanfare for huge/mega wins: rising run + a sustained bright chord.
+  const run = [523.25,587.33,659.25,698.46,783.99,880,987.77,1046.5];
+  run.forEach((f,i)=> tone(f, i*0.055, 0.22, 'triangle', 0.10));
+  [659.25,880,1046.5,1318.5].forEach((f,i)=> tone(f, 0.5+i*0.02, 0.9, 'sine', 0.09));
 }
 function playLoseSound(){
   if(!soundOn) return;
@@ -1146,6 +1218,68 @@ function moneyPop(amount, x, y){
   el.style.left = x+'px'; el.style.top = y+'px';
   document.body.appendChild(el);
   setTimeout(()=>el.remove(), 1150);
+}
+// Decides whether a win deserves the big "casino moment" treatment, and how big. Looks at both the
+// payout multiplier (how many times the stake came back) and how much it moved the player's cash
+// (so a modest-multiplier win that's still huge in dollar terms — e.g. cashing out Mines for
+// millions — celebrates too, not just high-multiplier long-shots).
+function winTier(profit, stake, cashBefore){
+  if(profit <= 0) return null;
+  const mult = stake > 0 ? profit/stake : 0;
+  const relCash = cashBefore > 0 ? profit/cashBefore : 0;
+  if(mult >= 40 || relCash >= 1.5) return 'mega';
+  if(mult >= 14 || relCash >= 0.6) return 'huge';
+  if(mult >= 4 || relCash >= 0.2) return 'big';
+  return null;
+}
+let celebrationActive = false;
+function celebrateWin(profit, stake, cashBefore){
+  const tier = winTier(profit, stake, cashBefore);
+  if(!tier) return;
+  const overlay = document.getElementById('celebrationOverlay');
+  overlay.innerHTML = '';
+  celebrationActive = true;
+
+  const burst = document.createElement('div');
+  burst.className = 'gold-burst tier-'+tier;
+  overlay.appendChild(burst);
+
+  const banner = document.createElement('div');
+  banner.className = 'win-banner tier-'+tier;
+  const label = tier==='mega' ? 'MEGA WIN' : tier==='huge' ? 'HUGE WIN' : 'BIG WIN';
+  banner.innerHTML = `<div class="win-banner-title">${label}</div><div class="win-banner-amount">+${fmt(profit)}</div>`;
+  overlay.appendChild(banner);
+
+  const particleCount = tier==='mega' ? 40 : tier==='huge' ? 24 : 12;
+  for(let i=0;i<particleCount;i++){
+    const p = document.createElement('div');
+    p.className = 'money-particle';
+    const angle = Math.random()*Math.PI*2;
+    const dist = 100 + Math.random() * (tier==='mega' ? 300 : tier==='huge' ? 210 : 130);
+    const dx = Math.cos(angle)*dist;
+    const dy = Math.sin(angle)*dist*0.6 - 60;
+    p.style.setProperty('--dx', dx.toFixed(0)+'px');
+    p.style.setProperty('--dy', dy.toFixed(0)+'px');
+    p.style.left = '50%'; p.style.top = '45%';
+    p.style.animationDelay = (Math.random()*0.3)+'s';
+    p.innerHTML = ICONS.coin;
+    overlay.appendChild(p);
+  }
+
+  const appEl = document.getElementById('app');
+  appEl.classList.remove('screen-shake');
+  void appEl.offsetWidth;
+  appEl.classList.add('screen-shake');
+
+  if(tier === 'mega') playJackpotSound();
+  else playChime();
+
+  const clearAfter = tier==='mega' ? 2500 : tier==='huge' ? 2000 : 1500;
+  setTimeout(()=>{
+    overlay.innerHTML = '';
+    appEl.classList.remove('screen-shake');
+    celebrationActive = false;
+  }, clearAfter);
 }
 function modal(title, html, onClose){
   const box = document.getElementById('modalBox');
@@ -1301,7 +1435,8 @@ const TAB_INTROS = {
   },
   scratch: {
     title: 'Welcome to Scratch Cards',
-    html: `Buy a card and it reveals instantly — a 3×3 grid of symbols. Match three identical symbols in a row, column, or diagonal to win, with rarer symbols paying more. No matching line, no payout.`
+    html: `Buy a card and three hidden squares appear. Click each one yourself to scratch it off and reveal what's underneath.
+    <br><br>Match all three symbols and you win — rarer symbols pay more. If they don't all match once every square is scratched, the card's a loss.`
   },
   bigwheel: {
     title: 'Welcome to the Big Wheel',
@@ -1331,7 +1466,7 @@ const TAB_INTROS = {
     title: 'Welcome to the Bank',
     html: `This is where you borrow money and track what you owe.
     <br><br>Each lender offers a different maximum loan and interest rate — friendlier lenders charge less but lend less, dangerous lenders lend a lot but charge steep interest and get worse if you miss payments.
-    <br><br>Borrowed cash goes straight into your wallet, but it also adds to your total debt. Use it carefully.`
+    <br><br>Borrowing isn't a free lever, either: every loan pushes your <b>All-In Risk</b> meter up — more with a bigger loan, more if you're already juggling several lenders, and a lot more with a dangerous one. The riskier lenders can also come knocking between payments, just to remind you who you owe. Borrowed cash goes straight into your wallet, but it also adds to your total debt. Use it carefully.`
   },
   invest: {
     title: 'Welcome to Investments',
@@ -1516,6 +1651,7 @@ function spin(){
       feedLine('rouletteFeed', `${colorLabel} — won: +${fmt(payout-stake)}`, 'win');
       toast(`You won ${fmt(payout-stake)}!`, 'good');
       playWinSound();
+      celebrateWin(payout-stake, stake, state.cash-payout+stake);
     } else {
       state.stats.roulette.lost++;
       state.stats.totalLost += stake;
@@ -1592,6 +1728,7 @@ document.getElementById('slotSpinBtn').addEventListener('click', ()=>{
         feedLine('slotFeed', `${resultLabel} — won: +${fmt(payout-stake)}`, 'win');
         toast(`Slots win: +${fmt(payout-stake)}`,'good');
         playWinSound();
+        celebrateWin(payout-stake, stake, state.cash-payout+stake);
       } else {
         state.stats.totalLost += stake;
         if(stake > state.stats.largestLoss) state.stats.largestLoss = stake;
@@ -1671,6 +1808,7 @@ document.getElementById('diceRollBtn').addEventListener('click', ()=>{
         feedLine('diceFeed', `Rolled ${roll} — won: +${fmt(payout-stake)}`, 'win');
         toast(`Dice win: +${fmt(payout-stake)}`,'good');
         playWinSound();
+        celebrateWin(payout-stake, stake, state.cash-payout+stake);
       } else {
         state.stats.totalLost += stake;
         if(stake>state.stats.largestLoss) state.stats.largestLoss = stake;
@@ -1765,6 +1903,7 @@ function resolveCraps(win, msg){
     feedLine('crapsFeed', `${msg} Won +${fmt(payout-stake)}`, 'win');
     toast(`Craps win: +${fmt(payout-stake)}`,'good');
     playWinSound();
+    celebrateWin(payout-stake, stake, state.cash-payout+stake);
   } else {
     state.stats.totalLost += stake;
     if(stake>state.stats.largestLoss) state.stats.largestLoss = stake;
@@ -1890,6 +2029,7 @@ document.getElementById('horseRaceBtn').addEventListener('click', ()=>{
       feedLine('horseFeed', `${winner.name} (${winner.colorName}) wins! +${fmt(payout-stake)}`, 'win');
       toast(`${winner.name} wins! +${fmt(payout-stake)}`,'good');
       playWinSound();
+      celebrateWin(payout-stake, stake, state.cash-payout+stake);
     } else {
       state.stats.totalLost += stake;
       if(stake>state.stats.largestLoss) state.stats.largestLoss = stake;
@@ -2096,6 +2236,7 @@ document.getElementById('coinFlipBtn').addEventListener('click', ()=>{
         feedLine('coinFeed', `Landed ${result} — won: +${fmt(payout-stake)}`, 'win');
         toast(`Coin flip win: +${fmt(payout-stake)}`,'good');
         playWinSound();
+        celebrateWin(payout-stake, stake, state.cash-payout+stake);
       } else {
         state.stats.totalLost += stake;
         if(stake>state.stats.largestLoss) state.stats.largestLoss = stake;
@@ -2200,6 +2341,7 @@ document.getElementById('highlowBtn').addEventListener('click', ()=>{
         feedLine('highlowFeed', `${base.r} then ${second.r} — won: +${fmt(payout-stake)}`, 'win');
         toast(`High-Low win: +${fmt(payout-stake)}`,'good');
         playWinSound();
+        celebrateWin(payout-stake, stake, state.cash-payout+stake);
       } else {
         state.stats.totalLost += stake;
         if(stake>state.stats.largestLoss) state.stats.largestLoss = stake;
@@ -2276,49 +2418,68 @@ document.getElementById('kenoDrawBtn').addEventListener('click', ()=>{
   state.cash -= stake;
   renderHud();
   playSpinSound();
-  setTimeout(()=>{
-    const drawn = kenoWeightedDraw();
-    const hits = new Set([...kenoPicked].filter(n=>drawn.has(n)));
-    const matches = hits.size;
-    renderKenoBoard(drawn, hits);
-    state.stats.totalGambled += stake;
-    if(stake>state.stats.largestBet) state.stats.largestBet = stake;
-    let mult = 0;
-    if(matches===2) mult = 1;
-    else if(matches===3) mult = 3;
-    else if(matches===4) mult = 15;
-    else if(matches>=5) mult = 50;
-    if(mult > 0){
-      const payout = Math.round(stake*mult);
-      state.cash += payout;
-      if(payout > stake){
-        state.stats.totalEarned += payout-stake;
-        if(payout-stake>state.stats.largestWin) state.stats.largestWin = payout-stake;
-        feedLine('kenoFeed', `${matches} matches — won: +${fmt(payout-stake)}`, 'win');
-        toast(`Keno win: +${fmt(payout-stake)}`,'good');
-        playWinSound();
+  const drawnFull = kenoWeightedDraw();
+  const drawOrder = Array.from(drawnFull); // insertion order from the weighted draw — already random
+  const revealed = new Set();
+  let i = 0;
+  const revealInterval = setInterval(()=>{
+    revealed.add(drawOrder[i]);
+    const hitsSoFar = new Set([...kenoPicked].filter(n=>revealed.has(n)));
+    renderKenoBoard(revealed, hitsSoFar);
+    playClick();
+    i++;
+    if(i >= drawOrder.length){
+      clearInterval(revealInterval);
+      const hits = new Set([...kenoPicked].filter(n=>drawnFull.has(n)));
+      const matches = hits.size;
+      state.stats.totalGambled += stake;
+      if(stake>state.stats.largestBet) state.stats.largestBet = stake;
+      let mult = 0;
+      if(matches===2) mult = 1;
+      else if(matches===3) mult = 3;
+      else if(matches===4) mult = 15;
+      else if(matches>=5) mult = 50;
+      if(mult > 0){
+        const payout = Math.round(stake*mult);
+        state.cash += payout;
+        if(payout > stake){
+          state.stats.totalEarned += payout-stake;
+          if(payout-stake>state.stats.largestWin) state.stats.largestWin = payout-stake;
+          feedLine('kenoFeed', `${matches} matches — won: +${fmt(payout-stake)}`, 'win');
+          toast(`Keno win: +${fmt(payout-stake)}`,'good');
+          playWinSound();
+          celebrateWin(payout-stake, stake, state.cash-payout+stake);
+        } else {
+          feedLine('kenoFeed', `${matches} matches — stake returned.`, '');
+          toast('Keno push — stake returned.');
+        }
       } else {
-        feedLine('kenoFeed', `${matches} matches — stake returned.`, '');
-        toast('Keno push — stake returned.');
+        state.stats.totalLost += stake;
+        if(stake>state.stats.largestLoss) state.stats.largestLoss = stake;
+        feedLine('kenoFeed', `${matches} matches — lost: -${fmt(stake)}`, 'lose');
+        toast(`Keno loss: -${fmt(stake)}`,'bad');
+        playLoseSound();
       }
-    } else {
-      state.stats.totalLost += stake;
-      if(stake>state.stats.largestLoss) state.stats.largestLoss = stake;
-      feedLine('kenoFeed', `${matches} matches — lost: -${fmt(stake)}`, 'lose');
-      toast(`Keno loss: -${fmt(stake)}`,'bad');
-      playLoseSound();
+      adjustRisk(stake/Math.max(1,state.cash+stake) * 13);
+      renderAll();
+      // Leave the board showing the results, then clear the player's picks for the next round.
+      setTimeout(()=>{
+        kenoPicked = new Set();
+        renderKenoBoard();
+        kenoDrawing = false;
+        document.getElementById('kenoDrawBtn').disabled = false;
+        document.getElementById('kenoStake').disabled = false;
+        document.querySelectorAll('[data-kenopct]').forEach(b=> b.disabled = false);
+      }, 3000);
     }
-    adjustRisk(stake/Math.max(1,state.cash+stake) * 13);
-    kenoDrawing = false;
-    document.getElementById('kenoDrawBtn').disabled = false;
-    document.getElementById('kenoStake').disabled = false;
-    document.querySelectorAll('[data-kenopct]').forEach(b=> b.disabled = false);
-    renderAll();
-  }, 900);
+  }, 180);
 });
 
 /* ============================= SCRATCH CARDS ============================= */
-let scratching = false;
+let scratchRoundActive = false;
+let scratchSymbols = [];
+let scratchRevealedCount = 0;
+let scratchStakeAmt = 0;
 function scratchWeightedSymbol(){
   const weights = {cherry:30, lemon:24, bell:18, star:12, diamond:9, seven:4};
   const total = Object.values(weights).reduce((a,b)=>a+b,0);
@@ -2326,64 +2487,79 @@ function scratchWeightedSymbol(){
   for(const sym of SLOT_SYMBOLS){ if(r < weights[sym]) return sym; r -= weights[sym]; }
   return 'cherry';
 }
-function scratchHasWin(grid){
-  const lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-  for(const [a,b,c] of lines){ if(grid[a]===grid[b] && grid[b]===grid[c]) return grid[a]; }
-  return null;
-}
 document.querySelectorAll('[data-scratchpct]').forEach(b=>b.addEventListener('click', ()=>{
-  if(scratching) return;
+  if(scratchRoundActive) return;
   document.getElementById('scratchStake').value = Math.max(1,Math.floor(state.cash * parseFloat(b.dataset.scratchpct)));
   playClick();
 }));
 document.getElementById('scratchBuyBtn').addEventListener('click', ()=>{
-  if(scratching) return;
+  if(scratchRoundActive) return;
   const stake = Math.floor(parseFloat(document.getElementById('scratchStake').value)||0);
   if(stake<=0){ toast('Enter a card price first.','bad'); return; }
   if(stake>state.cash){ toast("You don't have that much cash.",'bad'); return; }
-  scratching = true;
+  scratchRoundActive = true;
+  scratchStakeAmt = stake;
+  scratchRevealedCount = 0;
   document.getElementById('scratchBuyBtn').disabled = true;
   document.getElementById('scratchStake').disabled = true;
   document.querySelectorAll('[data-scratchpct]').forEach(b=> b.disabled = true);
   state.cash -= stake;
   renderHud();
   playSpinSound();
-  const grid = document.getElementById('scratchGrid');
-  grid.innerHTML = Array(9).fill('<div class="scratch-cell hidden-cell"></div>').join('');
-  setTimeout(()=>{
-    let symbols = Array.from({length:9}, ()=>scratchWeightedSymbol());
-    let winSym = scratchHasWin(symbols);
-    let tries = 0;
-    while(winSym && Math.random() >= riskEdge() && tries < 20){
-      symbols = Array.from({length:9}, ()=>scratchWeightedSymbol());
-      winSym = scratchHasWin(symbols);
-      tries++;
-    }
-    grid.innerHTML = symbols.map(s=>`<div class="scratch-cell">${ICONS[s]}</div>`).join('');
-    state.stats.totalGambled += stake;
-    if(stake>state.stats.largestBet) state.stats.largestBet = stake;
-    if(winSym){
-      const payout = Math.round(stake * SLOT_PAYOUTS[winSym] * 0.6);
-      state.cash += payout;
-      state.stats.totalEarned += payout-stake;
-      if(payout-stake>state.stats.largestWin) state.stats.largestWin = payout-stake;
-      feedLine('scratchFeed', `Three ${SLOT_LABELS[winSym]} in a row — won: +${fmt(payout-stake)}`, 'win');
-      toast(`Scratch card win: +${fmt(payout-stake)}`,'good');
-      playWinSound();
-    } else {
-      state.stats.totalLost += stake;
-      if(stake>state.stats.largestLoss) state.stats.largestLoss = stake;
-      feedLine('scratchFeed', `No match — lost: -${fmt(stake)}`, 'lose');
-      toast(`Scratch card loss: -${fmt(stake)}`,'bad');
-      playLoseSound();
-    }
-    adjustRisk(stake/Math.max(1,state.cash+stake) * 10);
-    scratching = false;
-    document.getElementById('scratchBuyBtn').disabled = false;
-    document.getElementById('scratchStake').disabled = false;
-    document.querySelectorAll('[data-scratchpct]').forEach(b=> b.disabled = false);
-    renderAll();
-  }, 500);
+
+  let symbols = Array.from({length:3}, ()=>scratchWeightedSymbol());
+  let isWin = symbols[0]===symbols[1] && symbols[1]===symbols[2];
+  let tries = 0;
+  while(isWin && Math.random() >= riskEdge() && tries < 20){
+    symbols = Array.from({length:3}, ()=>scratchWeightedSymbol());
+    isWin = symbols[0]===symbols[1] && symbols[1]===symbols[2];
+    tries++;
+  }
+  scratchSymbols = symbols;
+  document.getElementById('scratchGrid').innerHTML = Array(3).fill(0).map((_,i)=>
+    `<div class="scratch-cell hidden-cell" data-idx="${i}" style="cursor:pointer;"></div>`
+  ).join('');
+  toast('Scratch each square to reveal it!');
+});
+document.getElementById('scratchGrid').addEventListener('click', e=>{
+  if(!scratchRoundActive) return;
+  const cell = e.target.closest('[data-idx]'); if(!cell) return;
+  if(!cell.classList.contains('hidden-cell')) return; // already scratched
+  const idx = parseInt(cell.dataset.idx);
+  cell.classList.remove('hidden-cell');
+  cell.style.cursor = 'default';
+  cell.innerHTML = ICONS[scratchSymbols[idx]];
+  playClick();
+  scratchRevealedCount++;
+  if(scratchRevealedCount < 3) return;
+
+  // All three squares scratched — resolve the card.
+  const stake = scratchStakeAmt;
+  const isWin = scratchSymbols[0]===scratchSymbols[1] && scratchSymbols[1]===scratchSymbols[2];
+  state.stats.totalGambled += stake;
+  if(stake>state.stats.largestBet) state.stats.largestBet = stake;
+  if(isWin){
+    const payout = Math.round(stake * SLOT_PAYOUTS[scratchSymbols[0]] * 0.6);
+    state.cash += payout;
+    state.stats.totalEarned += payout-stake;
+    if(payout-stake>state.stats.largestWin) state.stats.largestWin = payout-stake;
+    feedLine('scratchFeed', `Three ${SLOT_LABELS[scratchSymbols[0]]} — won: +${fmt(payout-stake)}`, 'win');
+    toast(`Scratch card win: +${fmt(payout-stake)}`,'good');
+    playWinSound();
+    celebrateWin(payout-stake, stake, state.cash-payout+stake);
+  } else {
+    state.stats.totalLost += stake;
+    if(stake>state.stats.largestLoss) state.stats.largestLoss = stake;
+    feedLine('scratchFeed', `No match (${scratchSymbols.map(s=>SLOT_LABELS[s]).join(', ')}) — lost: -${fmt(stake)}`, 'lose');
+    toast(`Scratch card loss: -${fmt(stake)}`,'bad');
+    playLoseSound();
+  }
+  adjustRisk(stake/Math.max(1,state.cash+stake) * 10);
+  scratchRoundActive = false;
+  document.getElementById('scratchBuyBtn').disabled = false;
+  document.getElementById('scratchStake').disabled = false;
+  document.querySelectorAll('[data-scratchpct]').forEach(b=> b.disabled = false);
+  renderAll();
 });
 
 /* ============================= BIG WHEEL ============================= */
@@ -2455,6 +2631,7 @@ document.getElementById('bigWheelSpinBtn').addEventListener('click', ()=>{
       feedLine('bigWheelFeed', `Landed ${chosen.mult}x — won: +${fmt(payout-stake)}`, 'win');
       toast(`Big Wheel win: +${fmt(payout-stake)}`,'good');
       playWinSound();
+      celebrateWin(payout-stake, stake, state.cash-payout+stake);
     } else if(payout === stake){
       state.cash += payout;
       feedLine('bigWheelFeed', `Landed ${chosen.mult}x — stake returned.`, '');
@@ -2477,11 +2654,26 @@ document.getElementById('bigWheelSpinBtn').addEventListener('click', ()=>{
 
 /* ============================= PLINKO ============================= */
 const PLINKO_MULTS = [8,3,1.5,0.5,0.2,0.5,1.5,3,8];
+const PLINKO_ROWS = 8; // 8 peg rows -> 9 buckets at the bottom, matching PLINKO_MULTS
+const PLINKO_GAP_PCT = 84 / (PLINKO_ROWS-1); // horizontal spacing between adjacent pegs, in %
 function renderPlinkoSlots(hitIndex){
   document.getElementById('plinkoSlots').innerHTML = PLINKO_MULTS.map((m,i)=>
     `<div class="plinko-slot${i===hitIndex?' hit':''}">${m}x</div>`
   ).join('');
 }
+function pegRowY(r){ return ((r+1)/(PLINKO_ROWS+1))*100; } // percent from top of board
+function pegX(r, c){ return 50 - (r*PLINKO_GAP_PCT)/2 + c*PLINKO_GAP_PCT; } // percent from left
+function renderPlinkoPegs(){
+  const board = document.getElementById('plinkoBoard');
+  let html = '';
+  for(let r=0; r<PLINKO_ROWS; r++){
+    for(let c=0; c<=r; c++){
+      html += `<div class="plinko-peg" data-row="${r}" data-col="${c}" style="left:${pegX(r,c)}%; top:${pegRowY(r)}%;"></div>`;
+    }
+  }
+  board.insertAdjacentHTML('afterbegin', html);
+}
+renderPlinkoPegs();
 renderPlinkoSlots(-1);
 document.querySelectorAll('[data-plinkopct]').forEach(b=>b.addEventListener('click', ()=>{
   document.getElementById('plinkoStake').value = Math.max(1,Math.floor(state.cash * parseFloat(b.dataset.plinkopct)));
@@ -2500,32 +2692,42 @@ document.getElementById('plinkoDropBtn').addEventListener('click', ()=>{
   state.cash -= stake;
   renderHud();
   playSpinSound();
+
   let steps = 0;
-  for(let i=0;i<8;i++){ steps += Math.random()<0.5 ? 1 : 0; }
+  for(let i=0;i<PLINKO_ROWS;i++){ steps += Math.random()<0.5 ? 1 : 0; }
   let bucket = steps; // 0-8
   if(Math.random() < (1-riskEdge())*0.6){
     if(bucket>4) bucket--; else if(bucket<4) bucket++;
   }
+  // Build an 8-step left/right path whose rights sum to the final bucket, shuffled for a natural-looking drop.
+  const path = Array(PLINKO_ROWS).fill(0).map((_,i)=> i<bucket ? 1 : 0);
+  for(let i=path.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [path[i],path[j]]=[path[j],path[i]]; }
+
+  document.querySelectorAll('.plinko-peg.hit').forEach(p=> p.classList.remove('hit'));
   const board = document.getElementById('plinkoBoard');
-  board.innerHTML = '';
-  const ball = document.createElement('div');
-  ball.className = 'plinko-ball';
-  ball.style.left = '50%'; ball.style.top = '0px';
-  board.appendChild(ball);
-  const boardWidth = board.clientWidth || 260;
-  const targetLeftPct = (bucket/(PLINKO_MULTS.length-1))*100;
+  let ball = board.querySelector('.plinko-ball');
+  if(!ball){ ball = document.createElement('div'); ball.className = 'plinko-ball'; board.appendChild(ball); }
+  ball.style.left = '50%'; ball.style.top = '0%';
+
   let tick = 0;
-  const totalTicks = 8;
+  const totalTicks = PLINKO_ROWS + 1; // 8 peg rows, then a final settle into the bucket
   const anim = setInterval(()=>{
     tick++;
-    const progress = tick/totalTicks;
-    const wobble = (Math.random()*10-5);
-    const curLeft = 50 + (targetLeftPct-50)*progress + (progress<1 ? wobble : 0);
-    ball.style.left = curLeft+'%';
-    ball.style.top = (progress*220)+'px';
+    if(tick <= PLINKO_ROWS){
+      const r = tick-1;
+      const cumulative = path.slice(0, r).reduce((a,b)=>a+b,0);
+      const peg = board.querySelector(`.plinko-peg[data-row="${r}"][data-col="${cumulative}"]`);
+      if(peg) peg.classList.add('hit');
+      ball.style.left = pegX(r, cumulative)+'%';
+      ball.style.top = pegRowY(r)+'%';
+      playClick();
+    } else {
+      const targetLeftPct = ((bucket+0.5)/PLINKO_MULTS.length)*100;
+      ball.style.left = targetLeftPct+'%';
+      ball.style.top = '96%';
+    }
     if(tick>=totalTicks){
       clearInterval(anim);
-      ball.style.left = targetLeftPct+'%';
       renderPlinkoSlots(bucket);
       const mult = PLINKO_MULTS[bucket];
       state.stats.totalGambled += stake;
@@ -2538,6 +2740,7 @@ document.getElementById('plinkoDropBtn').addEventListener('click', ()=>{
         feedLine('plinkoFeed', `Landed ${mult}x — won: +${fmt(payout-stake)}`, 'win');
         toast(`Plinko win: +${fmt(payout-stake)}`,'good');
         playWinSound();
+        celebrateWin(payout-stake, stake, state.cash-payout+stake);
       } else {
         state.stats.totalLost += stake-payout;
         state.cash += payout;
@@ -2657,6 +2860,7 @@ document.getElementById('minesCashoutBtn').addEventListener('click', ()=>{
   feedLine('minesFeed', `Cashed out after ${minesRevealedCount} tiles at ${mult.toFixed(2)}x: +${fmt(payout-minesStake)}`, 'win');
   toast(`Cashed out: +${fmt(payout-minesStake)}`,'good');
   playWinSound();
+  celebrateWin(payout-minesStake, minesStake, state.cash-payout+minesStake);
   adjustRisk(-8);
   renderMinesGrid();
   document.getElementById('minesStartBtn').style.display = '';
@@ -2739,6 +2943,7 @@ document.getElementById('crashCashoutBtn').addEventListener('click', ()=>{
   feedLine('crashFeed', `Cashed out at ${crashMultiplier.toFixed(2)}x: +${fmt(payout-crashStake)}`, 'win');
   toast(`Cashed out at ${crashMultiplier.toFixed(2)}x: +${fmt(payout-crashStake)}`,'good');
   playWinSound();
+  celebrateWin(payout-crashStake, crashStake, state.cash-payout+crashStake);
   adjustRisk(-6);
   document.getElementById('crashMultiplierText').textContent = crashMultiplier.toFixed(2)+'x';
   document.getElementById('crashStartBtn').style.display = '';
@@ -2928,6 +3133,7 @@ document.getElementById('lenderList').addEventListener('click', e=>{
     state.cash += amt;
     state.debt += amt;
     state.stats.totalDebtTaken += amt;
+    const isNewLoan = !state.loans.find(x=>x.lenderId===lender.id);
     const existing = state.loans.find(x=>x.lenderId===lender.id);
     if(existing){
       existing.balance += amt;
@@ -2937,11 +3143,28 @@ document.getElementById('lenderList').addEventListener('click', e=>{
     } else {
       state.loans.push({id:Date.now()+Math.random(), lenderId:lender.id, lender:lender.name, principal:amt, balance:amt, rate:effectiveRate, dueEveryDays:5, nextDue:5});
     }
-    adjustRisk((amt/lender.max) * 12);
+    // Borrowing is a real risk, not a free lever: the size of the loan matters, but so does how many
+    // lenders you're already juggling and how dangerous this one is. Debt from a lot of directions at
+    // once is inherently more dangerous than the same total from one source.
+    const dangerBump = {friend:0, local:2, shark:6, underground:11, syndicate:18}[lender.id] || 0;
+    const stackingBump = state.loans.length * 3; // each concurrent loan makes the next one riskier
+    const newLoanBump = isNewLoan ? 4 : 0; // opening a new line of debt is riskier than adding to one you have
+    adjustRisk((amt/lender.max) * 20 + dangerBump + stackingBump + newLoanBump);
     if(riskPremium > 1.05){
       toast(`Borrowed ${fmt(amt)} from ${lender.name} — at a worse rate (${(effectiveRate*100).toFixed(1)}%) because your risk is high.`,'bad');
     } else {
       toast(`Borrowed ${fmt(amt)} from ${lender.name} at ${(effectiveRate*100).toFixed(1)}%.`,'bad');
+    }
+    // Dangerous lenders don't just charge more — sometimes they make sure you remember who you owe.
+    const threatChance = {friend:0, local:0.03, shark:0.10, underground:0.18, syndicate:0.28}[lender.id] || 0;
+    if(Math.random() < threatChance){
+      adjustRisk(8);
+      const lines = {
+        shark: "The loan shark's associate stops by \"just to say hello.\" You get the message.",
+        underground: "An unmarked car sits outside your place for an hour, then leaves. No words needed.",
+        syndicate: "The Syndicate doesn't send warnings. They send reminders — and this was one of them.",
+      };
+      setTimeout(()=> toast(lines[lender.id] || 'Someone made sure you know this debt is being watched.', 'bad'), 700);
     }
     input.value='';
     renderAll();
